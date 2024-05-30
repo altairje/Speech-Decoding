@@ -1,51 +1,86 @@
-# Brain-to-Text  
-***This repository was created for DL course in skoltech 2024***
+<h1 align="center">Brain-to-Text: Neural Decoding Challenge</h1>
 
-## Team 1
-1. Adithya Shetty
-2. Aibek Akhmetkazy
-3. Altair Toleugazinov
-4. Daniyal Asif
-5. Sergey Smetankin
+<p align="center">
+  <strong>Team: Team 1</strong>
+</p>
 
+<p align="center">
+  <a href="#project-overview">Overview</a> •
+  <a href="#repository-structure">Repository</a> •
+  <a href="#datasets">Datasets</a> •
+  <a href="#approach">Approach</a> •
+  <a href="#results--insights">Results</a> •
+  <a href="#conclusion">Conclusion</a> •
+  <a href="#contact-information">Contact</a>
+</p>
+
+---
+
+## 👥 Team Members
+- Adithya Shetty
+- Aibek Akhmetkazy
+- Altair Toleugazinov
+- Daniyal Asif
+- Sergey Smetankin
 
 ![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://legendary-digital-network-assets.s3.amazonaws.com/wp-content/uploads/2022/05/09122423/Patrick-Stewart-as-Professor-X-.jpeg)
 
+## 🔍 Project Overview
+Our project is part of the "Brain-to-Text Benchmark '24" hosted on Eval.ai, which challenges teams to develop a system capable of translating human neural activity into text using deep learning. This involves decoding EEG data to convert it into sentences.
 
+![Project Description Image](https://raw.githubusercontent.com/fwillett/speechBCI/main/SystemDiagram.png)
 
-# Project description
+## 📂 Repository Structure
+- `approach1`: Folder for the first approach using specific neural decoding strategies.
+- `approach2`: Folder for the second approach with alternate decoding strategies.
+- `approach3`: Folder for the third approach, integrating complex models.
+- `baseline`: Folder to run the Baseline model for comparison.
+- `requirements.txt`: List of Python dependencies for reproducing the analysis.
 
-![proj description](https://raw.githubusercontent.com/fwillett/speechBCI/main/SystemDiagram.png)
+## 🔧 Environment Setup and Running the Code
 
-Our project is related to Kaggle challenge ["Brain-to-Text Benchmark '24"](https://eval.ai/web/challenges/challenge-page/2099/overview)
+To set up the environment and run the code, please follow these steps:
 
-Link for [dataset](https://datadryad.org/stash/dataset/doi:10.5061/dryad.x69p8czpq)
+1. Clone the repository: `git clone https://github.com/your-repo-url`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Navigate to the approach folder: `cd approach1` (or any other approach)
+4. Run the notebook: `jupyter notebook`
 
-This competition asks participants to solve a problem that borders on the fantastic -- to teach a computer to translate human thoughts into text. More specifically, the challenge is to train a neural network to decode the data coming from the EEG and convert it into sentences.
+## 📊 Datasets
+We utilize a dataset from neurobiological experiments where neural activity was recorded with microelectrode arrays. The data consist of 12,100 spoken sentences and include features like threshold crossings and spike band power, which are crucial for developing our decoding models.
 
-## Data structure 
-During neurobiological experiments neural activity was recorded with microelectrode arrays, and neural features are provided in the form of binned threshold crossings and spike band power (20 ms bins).
+### Data Fields
+- **sentenceText**: Text of each sentence.
+- **spikePow**: Time series of spike power neural features.
+- **tx1, tx2, tx3, tx4**: Time series of threshold crossing neural features with different thresholds.
 
-This dataset contains all of the neural activity recorded during these experiments, consisting of 12,100 spoken sentences as well as instructed delay experiments designed to investigate the neural representation of orofacial movement and speech production.
+## 🚀 Approach
+Our project includes three main approaches to decoding neural signals:
 
-The data have also been formatted for developing and evaluating machine learning decoding methods, and we intend to host a decoding competition based on this data.
+1. **Approach 1**: Involves preprocessing for data normalization, feature extraction by combining `tx1` and `spikePow`, phoneme decoding using a G2p model, and a SpeechBCIModel for generating phoneme probabilities, followed by a language model for text generation.
 
-**"competitionData"** is a simplified version of the sentences data that has been formatted and partitioned for machine learning research. It contains a "train" and "test" partition for model development, and a held-out "competitionHoldOut" set intended for a speech decoding competition.
+2. **Approach 2**: Starts with data segmentation and normalization, utilizes `tx1` and `spikePow` for feature extraction, employs a G2p model for phoneme decoding, and uses a convolutional and LSTM network for neural decoding, with an n-gram language model to enhance text coherence.
 
-Useful information for us is contained in the following fields of this data:
+3. **Approach 3**: Features block-wise normalization, concatenates `tx1` and `spikePow` for input features, uses a Seq2Seq model with attention mechanisms for phoneme-to-text conversion, and includes a GRU-based encoder and decoder for final text prediction.
 
-**sentenceText**: S x C character matrix containing the text of each sentence (S = number of sentences, C = maximum number of characters across all sentences included in sentenceText). 
+## 🏁 Results & Insights
+The following table compares the Word Error Rate (%) across different approaches:
 
-**spikePow** : S x 1 vector containing a time series of spike power neural features for each sentence (S = number of sentences). Each entry is a T x F matrix of binned spike band power (20 ms bins), where T = number of time steps in the sentence and F = number of channels (256). Spike band power was defined as the mean of the squared voltages observed on the channel after high-pass filtering (250 Hz cutoff; units of microvolts squared). The data was denoised with a linear regression reference technique. The channels correspond to the arrays as follows (where 000 refers to the first column of spikePow and 255 refers to the last).
+| Approach    | Word Error Rate (%) |
+|-------------|---------------------|
+| SOTA        | 8.93                |
+| Approach 1  | 13.65               |
+| Approach 2  | 14.78               |
+| Approach 3  | 15.23               |
+| Baseline    | 15.43               |
 
-**tx1** : S x 1 vector containing a time series of threshold crossing neural features for each sentence (S = number of sentences). Each entry is a T x F matrix of binned threshold crossing counts (20 ms bins), where T = number of time steps in the sentence and F = number of channels (256). The data was denoised with a linear regression reference technique and a -3.5 x RMS threshold was used. The channels correspond to the arrays in the same way as spikePow described above. Note that threshold crossing counts describe the number of times the voltage recorded on an electrode crossed a threshold within a given time bin (essentially, this roughly counts the number of nearby action potentials observed on an elctrode in a given time bin). 
+## 🎉 Conclusion
+Our project demonstrates significant advances in the ability to decode speech from neural signals, pushing the boundaries of what's possible in brain-computer interfacing technology.
 
-**tx2** : Same as tx1 but with a -4.5 x RMS threshold.
-
-**tx3** : Same as tx1 but with a -5.5 x RMS threshold.
-
-**tx4** : Same as tx1 but with a -6.5 x RMS threshold.
-
-# Our solutions
-
-1. [***Encoder-decoder Sec2Sec model + attention***]( https://ethen8181.github.io/machine-learning/deep_learning/seq2seq/2_torch_seq2seq_attention.html#Seq2Seq), [link_2](https://www.kaggle.com/code/isikkuntay/gru-with-attention), but since our data is Time x Channels -- matrix with shape (t,256) this model were modified by adding convolutional layers to reduse dimension to (t,1). This model was chosen in attempt to take more information from timeseries data. Attention mechanism should (in theory) help to take into account different part of the data since people think words in their entirety.
+## 📧 Contact Information
+For more details, you can reach out to us:
+- Adithya Shetty: Adithya.Shetty@skoltech.ru
+- Aibek Akhmetkazy: Aibek.Akhmetkazy@skoltech.ru
+- Altair Toleugazinov: Altair.Toleugazinov@skoltech.ru
+- Daniyal Asif: Daniyal.Asif@skoltech.ru
+- Sergey Smetankin: Sergey.Smetankin@skoltech.ru
